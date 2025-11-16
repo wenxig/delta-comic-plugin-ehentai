@@ -7,7 +7,8 @@ import Dompurify from 'dompurify'
 
 export const createCommonToItem = async (tr: HTMLTableRowElement) => {
   const bigCategory = <Category><any>Category[<any>tr.querySelector<HTMLDivElement>('.gl3e>.cn')?.innerText]
-  const categories = await createCategories(tr.querySelector<HTMLTableElement>('& table')!, bigCategory)
+  console.log(tr.querySelector<HTMLTableElement>('table'),tr)
+  const categories = await createCategories(tr.querySelector<HTMLTableElement>('table')!, bigCategory)
   const coverEl = tr.querySelector<HTMLImageElement>('.gl1e img')!
   const id = new URL(tr.querySelector('a')?.href ?? '').pathname.replaceAll('/', '-')
   return new eh.comic.EhItem({

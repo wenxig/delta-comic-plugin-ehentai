@@ -20,6 +20,7 @@
     "typecheck": "vue-tsc --noEmit -p ./tsconfig.json --composite false"
   },
   "dependencies": {
+    "@octokit/rest": "^22.0.1",
     "@vicons/antd": "^0.13.0",
     "@vicons/material": "^0.13.0",
     "@vueuse/core": "^14.0.0",
@@ -27,9 +28,11 @@
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.18",
     "delta-comic-core": "link:../delta-comic-core",
+    "dexie": "^4.2.1",
     "dompurify": "^3.3.0",
     "es-toolkit": "^1.40.0",
     "naive-ui": "^2.43.1",
+    "pako": "^2.1.0",
     "vant": "^4.9.21",
     "vue": "^3.5.22",
     "vue-picture-cropper": "^0.7.0",
@@ -39,6 +42,7 @@
     "@tailwindcss/vite": "^4.1.14",
     "@types/crypto-js": "^4.2.2",
     "@types/node": "^24.8.1",
+    "@types/pako": "^2.0.4",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vitejs/plugin-vue-jsx": "^5.1.1",
     "@vue/tsconfig": "^0.8.1",

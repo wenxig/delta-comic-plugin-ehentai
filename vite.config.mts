@@ -10,6 +10,7 @@ import monkey from 'vite-plugin-monkey'
 import { browserslistToTargets } from 'lightningcss'
 import browserslist from 'browserslist'
 import external from 'vite-plugin-external'
+import { createExternalConfig, createMonkeyConfig } from 'delta-comic-core/vite'
 export default defineConfig(({ command }) => ({
   plugins: [
     vue(),
@@ -22,49 +23,14 @@ export default defineConfig(({ command }) => ({
       ],
     }),
     tailwindcss(),
-    monkey({
-      entry: 'src/main.ts',
-      userscript: {
-        name: {
-          ds: 'EHentai',
-          default: 'ehentai'
-        },
-        version: _package.version,
-        author: _package.author.name,
-        description: _package.description,
-        require: ['core'],
-      },
-      build: {
-        externalGlobals: command == 'serve' ? undefined : {
-          vue: 'window.$$lib$$.Vue',
-          vant: 'window.$$lib$$.Vant',
-          'naive-ui': 'window.$$lib$$.Naive',
-          axios: 'window.$$lib$$.Axios',
-          'es-toolkit': 'window.$$lib$$.EsKits',
-          'delta-comic-core': 'window.$$lib$$.Dcc',
-          'vue-router': 'window.$$lib$$.VR',
-          'crypto-js': 'window.$$lib$$.Crypto'
-        },
-      },
-      server: {
-        mountGmApi: false,
-        open: false,
-        prefix: false
-      }
-    }),
-    command == 'build' ? undefined :
-      external({
-        externals: {
-          vue: 'window.$$lib$$.Vue',
-          vant: 'window.$$lib$$.Vant',
-          'naive-ui': 'window.$$lib$$.Naive',
-          axios: 'window.$$lib$$.Axios',
-          'es-toolkit': 'window.$$lib$$.EsKits',
-          'delta-comic-core': 'window.$$lib$$.Dcc',
-          'vue-router': 'window.$$lib$$.VR',
-          'crypto-js': 'window.$$lib$$.Crypto'
-        }
-      })
+    monkey(createMonkeyConfig({
+      description: _package.description,
+      author: _package.author.name,
+      displayName: 'EHentai',
+      name: 'ehentai',
+      version: _package.version
+    }, command)),
+    external(createExternalConfig(command))
   ],
   resolve: {
     alias: {

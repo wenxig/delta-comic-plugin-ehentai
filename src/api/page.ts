@@ -1,19 +1,28 @@
 import { pluginName } from "@/symbol"
 import { coreModule, requireDepend, uni, Utils } from "delta-comic-core"
+import { eh } from "."
 
 const { view } = requireDepend(coreModule)
 
 export class EhPage extends uni.content.ContentImagePage {
+  override comments: Utils.data.RStream<uni.comment.Comment> =
+    Utils.data.Stream.create<uni.comment.Comment>(async function* () {
+      return
+    })
   public static contentType = this.toContentTypeString({
     plugin: pluginName,
     name: 'comic'
   })
   override contentType = uni.content.ContentPage.toContentType(EhPage.contentType)
-  override comments = Utils.data.Stream.create<never>(async function* (signal, that) {
-    return
-  })
-  override loadAll(_signal?: AbortSignal): Promise<any> {
-    throw new Error("Method not implemented.")
+  override loadAll(signal?: AbortSignal) {
+    this.pid.resolve(this.id)
+    return this.detail.content.loadPromise(eh.api.comic.getComicInfo(this.id, signal).then(info => {
+      this.comments = Utils.data.Stream.create<uni.comment.Comment>(async function* () {
+        yield info.comment
+        return
+      })
+      return info.info
+    }))
   }
   override reloadAll(_signal?: AbortSignal): Promise<any> {
     throw new Error("Method not implemented.")

@@ -29,6 +29,7 @@ declare module 'vue' {
     VanField: typeof import('vant/es')['Field']
     VanIcon: typeof import('vant/es')['Icon']
     VanPopover: typeof import('vant/es')['Popover']
+    VanRate: typeof import('vant/es')['Rate']
     VanTag: typeof import('vant/es')['Tag']
     View: typeof import('./src/components/view.vue')['default']
   }
@@ -53,6 +54,7 @@ declare global {
   const VanField: typeof import('vant/es')['Field']
   const VanIcon: typeof import('vant/es')['Icon']
   const VanPopover: typeof import('vant/es')['Popover']
+  const VanRate: typeof import('vant/es')['Rate']
   const VanTag: typeof import('vant/es')['Tag']
   const View: typeof import('./src/components/view.vue')['default']
 }

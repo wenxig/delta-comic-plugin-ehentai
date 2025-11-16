@@ -2,6 +2,7 @@ import { ehStore } from "@/store"
 import { Utils } from "delta-comic-core"
 import { createCommonToItem } from "./utils"
 import type { eh } from ".."
+import { random } from "es-toolkit/compat"
 
 export namespace _ehApiSearch {
   const { Stream, PromiseContent } = Utils.data
@@ -30,8 +31,13 @@ export namespace _ehApiSearch {
     }
   })
   export const getRandomComic = PromiseContent.fromAsyncFunction((async (signal?: AbortSignal) => {
-    const html = new DOMParser().parseFromString(await ehStore.api.value!.get<string>('/', { signal }), 'text/html')
-    const cards = Array.from(html.querySelectorAll<HTMLTableRowElement>('.itg.glte>tbody>tr'))
+    const html = new DOMParser().parseFromString(await ehStore.api.value!.get<string>('/', {
+      signal, params: {
+        next: `36${random(0, 5)}0${random(0, 999)}`
+      }
+    }), 'text/html')
+    const cards = Array.from(html.querySelector('.itg')?.querySelectorAll<HTMLTableRowElement>('tr') ?? [])
+    console.log(html, cards, Array.from(html.querySelectorAll<HTMLTableRowElement>('.itg')), Array.from(html.querySelectorAll<HTMLTableRowElement>(' .itg')))
     return await Promise.all(cards.map(c => createCommonToItem(c)))
   }))
 }

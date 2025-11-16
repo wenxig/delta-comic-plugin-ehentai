@@ -84,19 +84,25 @@ export namespace _ehTranslate {
   }
   export const db = new TranslateDB
 
+  export const getIsUpdate = async () => {
+    const version = useLocalStorage('eh.db.version', '')
+    const { data: repo } = await octokit.repos.getLatestRelease({
+      owner: 'EhTagTranslation',
+      repo: 'Database'
+    })
+    const downloadUrl = repo.assets.find(v => v.name == 'db.text.json.gz')
+    if (!downloadUrl) throw new Error('未找到资源')
+    return { downloadUrl: downloadUrl.browser_download_url, tag: repo.tag_name, isNew: version.value == repo.tag_name }
+  }
+
   export const downloadDatabase = () => Utils.message.createDownloadMessage('更新翻译数据库', async ({ createLoading, createProgress }) => {
     const version = useLocalStorage('eh.db.version', '')
     const { downloadUrl, tag } = await createLoading('获取仓库信息', async c => {
       c.retryable = true
       c.description = '读取中'
-      const { data: assets } = await octokit.repos.getLatestRelease({
-        owner: 'EhTagTranslation',
-        repo: 'Database'
-      })
-      if (version.value == assets.tag_name) throw new Error('已是最新版本')
-      const downloadUrl = assets.assets.find(v => v.name == 'db.text.json.gz')
-      if (!downloadUrl) throw new Error('未找到资源')
-      return { downloadUrl: downloadUrl.browser_download_url, tag: assets.tag_name }
+      const { downloadUrl, tag, isNew } = await getIsUpdate()
+      if (!isNew) throw new Error('已是最新版本')
+      return { downloadUrl, tag }
     })
     const table = await createProgress('下载归档文件', async c => {
       c.retryable = true

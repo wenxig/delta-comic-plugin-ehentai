@@ -6,7 +6,7 @@ import { EhPage } from "../page"
 import Dompurify from 'dompurify'
 
 export const createCommonToItem = async (tr: HTMLTableRowElement) => {
-  const bigCategory = <Category><any>Category[<any>gm.querySelector<HTMLDivElement>('.gl3e>.cn')?.innerText]
+  const bigCategory = <Category><any>Category[<any>tr.querySelector<HTMLDivElement>('.gl3e>.cn')?.innerText]
   const categories = await createCategories(tr.querySelector<HTMLTableElement>('& table')!, bigCategory)
   const coverEl = tr.querySelector<HTMLImageElement>('.gl1e img')!
   const id = new URL(tr.querySelector('a')?.href ?? '').pathname.replaceAll('/', '-')
@@ -38,6 +38,7 @@ export const createCommonToItem = async (tr: HTMLTableRowElement) => {
     },
     likeNumber: RateMap[tr.querySelector<HTMLDivElement>('div.ir')!.style.backgroundPosition],
     updateTime: dayjs(tr.querySelector<HTMLDivElement>(`#posted_${id.split('-').at(-2)}`)?.innerText).toDate().getTime(),
+    customIsSafe: checkIsSafe(categories)
   })
 }
 const RateMap: Record<string, number> = {
@@ -122,7 +123,7 @@ export const CategoriesTranslations = {
 export const calcCategory = (categories: Category[]) =>
   1023 - categories.reduce((acc, category) => acc | category, 0)
 
-export const createFullToItem = async (gm: Document, id: string) => {
+export const createFullToItem = async (gm: Document, id: string, commentsCount: number) => {
   const bigCategory = <Category><any>Category[<any>gm.querySelector<HTMLDivElement>('#gdc>.cs')?.innerText]
   const categories = await createCategories(gm.querySelector<HTMLTableElement>('#taglist>table')!, bigCategory)
   const coverEl = gm.querySelector<HTMLDivElement>('#gd1>div')!
@@ -158,11 +159,14 @@ export const createFullToItem = async (gm: Document, id: string) => {
       type: 'html',
       content: Dompurify.sanitize(gm.getElementById('comment_0')?.innerHTML ?? '')
     },
-    customIsSafe
+    customIsSafe: checkIsSafe(categories),
+    commentNumber: commentsCount,
+
   })
 }
 
 const checkIsSafe = (categories: uni.item.Category[]) => categories.some(v => [
   CategoriesTranslations[Category["Non-H"]],
-  '无露点'
+  '无露点',
+  '无H图片集',
 ].includes(v.name))

@@ -22,15 +22,10 @@ const { comp } = requireDepend(coreModule)
   <comp.ItemCard :="$props" @click="$emit('click', item)">
     <template #smallTopInfo>
       <span>
-        <VanIcon name="eye-o" class="mr-0.5" size="14px" />
-        <span>{{ item.viewNumber }}</span>
+        <VanIcon name="app-o" class="mr-0.5" size="14px" />
+        <span>{{ item.categories[0].name }}</span>
       </span>
-      <span>
-        <NIcon class="mr-0.5" size="14px" color="white">
-          <LikeOutlined />
-        </NIcon>
-        <span>{{ item.likeNumber }}</span>
-      </span>
+      <VanRate :modelValue="item.likeNumber ?? 3" readonly allow-half size="14px" color="var(--p-color)" />
     </template>
     <div class="flex gap-0.5 items-center" v-if="type == 'small'">
       <NIcon color="var(--van-text-color-2)" size="14px">

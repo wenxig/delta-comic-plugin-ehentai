@@ -32,7 +32,7 @@ definePlugin({
       contentPage: EhPage,
       itemTranslator: v => eh.comic.EhItem.create(v),
       layout: layout.Default,
-      
+
     }
   },
   api: {
@@ -63,7 +63,10 @@ definePlugin({
       if (!isString(ins.api?.eh)) throw new Error('api not resolved')
       return ins.api.eh
     }, {
-      withCredentials: true
+      withCredentials: true,
+      params: {
+        inline_set: 'dm_e'
+      }
     })
     Utils.eventBus.SharedFunction.define(signal => eh.api.search.getRandomComic(signal), pluginName, 'getRandomProvide')
   },

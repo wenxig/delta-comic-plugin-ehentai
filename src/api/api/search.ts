@@ -18,7 +18,7 @@ export namespace _ehApiSearch {
           f_cats: category
         },
         signal
-      }), 'text/html')
+      }), 'text/html').querySelector('body')!
       const cards = Array.from(html.querySelectorAll<HTMLTableRowElement>('.itg.glte>tbody>tr'))
       const nextHref = html.querySelector<HTMLAnchorElement>('#unext')?.href
       if (!nextHref) isDone = true
@@ -27,17 +27,19 @@ export namespace _ehApiSearch {
       that.page.value = absolutePage + 1
       if (!Number.isNaN(that.pages.value)) that.pages.value = absolutePage + 1
       that.total.value = Number(html.querySelector<HTMLParagraphElement>('.searchtext>p')?.innerText.match(/\d+/)?.[0])
+      console.log('body:', html, "cards:", cards)
       yield await Promise.all(cards.map(c => createCommonToItem(c)))
     }
   })
   export const getRandomComic = PromiseContent.fromAsyncFunction((async (signal?: AbortSignal) => {
-    const html = new DOMParser().parseFromString(await ehStore.api.value!.get<string>('/', {
+    const table = new DOMParser().parseFromString(await ehStore.api.value!.get<string>('/', {
       signal, params: {
         next: `36${random(0, 5)}0${random(0, 999)}`
       }
-    }), 'text/html')
-    const cards = Array.from(html.querySelector('.itg')?.querySelectorAll<HTMLTableRowElement>('tr') ?? [])
-    console.log(html, cards, Array.from(html.querySelectorAll<HTMLTableRowElement>('.itg')), Array.from(html.querySelectorAll<HTMLTableRowElement>(' .itg')))
+    }), 'text/html').querySelector<HTMLTableElement>('.itg.glte')!
+    console.log('table:', table)
+    const cards = Array.from(table.querySelectorAll<HTMLTableRowElement>('.itg.glte>tbody>tr') ?? [])
+    console.log("cards:", cards)
     return await Promise.all(cards.map(c => createCommonToItem(c)))
   }))
 }

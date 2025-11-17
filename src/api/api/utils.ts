@@ -6,10 +6,11 @@ import { EhPage } from "../page"
 import Dompurify from 'dompurify'
 
 export const createCommonToItem = async (tr: HTMLTableRowElement) => {
-  const bigCategory = <Category><any>Category[<any>tr.querySelector<HTMLDivElement>('.gl3e>.cn')?.innerText]
-  console.log(tr.querySelector<HTMLTableElement>('table'),tr)
-  const categories = await createCategories(tr.querySelector<HTMLTableElement>('table')!, bigCategory)
-  const coverEl = tr.querySelector<HTMLImageElement>('.gl1e img')!
+  const bigCategory = <Category><any>Category[<any>tr.querySelector<HTMLDivElement>('.gl2e>div>a')?.innerText]
+  const tagsTable = tr.querySelector<HTMLTableElement>('.gl2e>div>a table')!
+  console.log('tr:', tr, 'tagsTable:', tagsTable)
+  const categories = await createCategories(tagsTable, bigCategory)
+  const coverEl = tr.querySelector<HTMLImageElement>(' .gl1e img')!
   const id = new URL(tr.querySelector('a')?.href ?? '').pathname.replaceAll('/', '-')
   return new eh.comic.EhItem({
     categories,
@@ -162,7 +163,6 @@ export const createFullToItem = async (gm: Document, id: string, commentsCount: 
     },
     customIsSafe: checkIsSafe(categories),
     commentNumber: commentsCount,
-
   })
 }
 
